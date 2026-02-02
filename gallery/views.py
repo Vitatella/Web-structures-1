@@ -6,4 +6,4 @@ def home(request):
     return HttpResponse("<h1>Добро пожаловать в 3D Хранилище</h1><p>Система работает.</p>")
 
 def about(request):
-    return HttpResponse("<h2>Курс Web Структуры.</p>")
+    return HttpResponse("<h2>Курс Web Структуры.</h2>")
