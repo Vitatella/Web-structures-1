@@ -6,7 +6,8 @@ from django.http import HttpResponse
     #return HttpResponse("<h1>Добро пожаловать в 3D Хранилище</h1><p>Система работает.</p>")
 
 def about(request):
-    return HttpResponse("<h2>Курс Web Структуры.</h2>")
+    #return HttpResponse("<h2>Курс Web Структуры.</h2>")
+    return render(request, 'gallery/about.html')
 
 def home(request):
     # Имитация данных из базы (список словарей)
