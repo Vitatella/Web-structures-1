@@ -14,6 +14,7 @@ def home(request):
         {'id': 1, 'name': 'Sci-Fi Helmet', 'file_size': '15 MB'},
         {'id': 2, 'name': 'Old Chair', 'file_size': '2 MB'},
         {'id': 3, 'name': 'Cyber Truck', 'file_size': '10 MB'},
+        {'id': 4, 'name': 'EWiobjboeihgwerh]', 'file_size': '1024 GB'},
     ]
     context_data = {
         'page_title': 'Главная Галерея',
