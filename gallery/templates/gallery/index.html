@@ -14,11 +14,13 @@
         <!-- Цикл for в шаблоне Django -->
         <ul>
             {% for asset in assets %}
-                <li>
-                    <strong>{{ asset.name }}</strong> 
-                    <small>(Размер: {{ asset.file_size }})</small>
-                    <!-- Ссылка-заглушка -->
-                    <a href="#">[Скачать]</a>
+            <li>
+                <strong>{{ asset.title }}</strong>
+                <!-- asset.file.url — это ссылка на файл (/media/3d_assets/...) -->
+                <!-- asset.file.size — размер в байтах. filter 'filesizeformat' делает его читаемым 
+                (MB/KB) -->
+                <small>(Размер: {{ asset.file.size|filesizeformat }})</small>
+                <a href="{{ asset.file.url }}" download>[Скачать файл]</a>
                 </li>
             {% empty %}
                 <!-- Этот блок сработает, если список assets пустой -->
