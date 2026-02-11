@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta charset="UTF-8">
-<title>3D Storage</title>
+    <meta charset="UTF-8">
+    <title>3D Storage</title>
 </head>
+
 <body>
-<header>
-<!-- {{ ... }} — это переменная. Мы передадим её из Python -->
-<h1>{{ page_title }}</h1>
-</header>
- <main>
+    <header>
+        <!-- {{ ... }} — это переменная. Мы передадим её из Python -->
+        <h1>{{ page_title }}</h1>
+    </header>
+    <main>
         <h2>Доступные ассеты:</h2>
         <!-- Цикл for в шаблоне Django -->
         <ul>
@@ -22,19 +24,20 @@
                 <small>(Дата загрузки: {{ asset.created_at|date:"d.m.Y H:i"}})</small>
                 <small>(Размер: {{ asset.file.size|filesizeformat }})</small>
                 <a href="{{ asset.file.url }}" download>[Скачать файл]</a>
-                </li>
+            </li>
             {% empty %}
-                <!-- Этот блок сработает, если список assets пустой -->
-                <li>Нет доступных моделей.</li>
+            <!-- Этот блок сработает, если список assets пустой -->
+            <li>Нет доступных моделей.</li>
             {% endfor %}
         </ul>
         <a href="/upload/">Загрузить</a>
         <br>
         <a href="/about/">О нас</a>
-        
+
     </main>
-<footer>
-<p>&copy; 2024 Web Structures Course</p>
-</footer>
+    <footer>
+        <p>&copy; 2024 Web Structures Course</p>
+    </footer>
 </body>
+
 </html>

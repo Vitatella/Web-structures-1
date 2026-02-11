@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Asset
+from .forms import AssetForm
+from django.contrib import messages
 
 #def home(request):
     # Мы пока не используем HTML-шаблоны, просто вернем строку.
@@ -19,5 +21,21 @@ def home(request):
     }
     return render(request, 'gallery/index.html', context_data)
 
-def upload (request):
-    return render(request, 'gallery/upload.html')
+def upload(request):
+    if request.method == 'POST':
+        # Сценарий: Пользователь нажал "Отправить"
+        # ВАЖНО: Передаем request.FILES, иначе файл потеряется!
+        form = AssetForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Если все поля заполнены верно - сохраняем в БД
+            form.save()
+            # И перекидываем пользователя на главную
+            messages.success(request, 'Спасибо, файл загружен!')
+            return redirect('home')
+        else:
+            messages.warning(request, "Неправильный формат файла")
+    else:
+        # Сценарий: Пользователь просто зашел на страницу (GET)
+        form = AssetForm() # Создаем пустую форму
+        # Отдаем шаблон, передавая туда форму (заполненную ошибками или пустую)
+    return render(request, 'gallery/upload.html', {'form': form})
