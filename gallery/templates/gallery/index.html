@@ -6,6 +6,26 @@
 <head>
     <meta charset="UTF-8">
     <title>3D Storage</title>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>3D Storage</title>
+        <!-- ... ваши старые теги ... -->
+        <!-- ВАЖНО: Это карта, указывающая браузеру, где брать библиотеки -->
+        <script type="importmap">
+{
+"imports": {
+"three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+"three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}
+}
+</script>
+        <!-- Подключение CSS (оставьте как было) -->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'gallery/style.css' %}">
+    </head>
+
+
     <link rel="stylesheet" href="{% static 'gallery/style.css' %}">
 </head>
 
@@ -36,7 +56,7 @@
                         <span>📅 {{ asset.created_at|date:"d M Y" }}</span>
                         <!-- Если есть файл, показываем размер -->
                         {% if asset.file %}
-                       <span>💾 {{ asset.file.size|filesizeformat }}</span>
+                        <span>💾 {{ asset.file.size|filesizeformat }}</span>
                         {% endif %}
                     </div>
                     <!-- Кнопка скачивания -->
@@ -53,4 +73,26 @@
             {% endfor %}
         </div>
     </main>
+
+    <script type="module">
+        // Импортируем нашу функцию.
+        // Обратите внимание: путь к JS через static
+        import { mountSimpleCube } from "{% static 'gallery/js/viewer.js' %}";
+        // Находим все контейнеры карточек
+        const containers = document.querySelectorAll('.card-preview');
+        if (containers.length > 0) {
+            for (let i = 0; i < containers.length; i++)
+            {
+// Берем только первый контейнер для теста
+            const firstContainer = containers[i];
+            // Получаем его ID (мы задали его на прошлой неделе: model-container-{{ asset.id }})
+            const containerId = firstContainer.id;
+            // Запускаем магию
+            mountSimpleCube(containerId);
+            }
+            
+        }
+    </script>
+</body>
+
 </body>
