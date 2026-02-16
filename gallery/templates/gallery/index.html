@@ -36,8 +36,7 @@
                         <span>📅 {{ asset.created_at|date:"d M Y" }}</span>
                         <!-- Если есть файл, показываем размер -->
                         {% if asset.file %}
-                        <span style="float: right;">💾 {{
-                            asset.file.size|filesizeformat }}</span>
+                       <span>💾 {{ asset.file.size|filesizeformat }}</span>
                         {% endif %}
                     </div>
                     <!-- Кнопка скачивания -->
