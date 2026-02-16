@@ -125,3 +125,4 @@ MEDIA_URL = '/media/'
 # Физический путь на диске, где будет создана папка media
 # BASE_DIR — это папка, где лежит manage.py
 MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = BASE_DIR / "staticfiles"
