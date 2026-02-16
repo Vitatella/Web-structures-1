@@ -2,6 +2,7 @@ from django import forms
 from .models import Asset
 from django.core.exceptions import ValidationError
 import os
+from django.contrib import messages
 
 
 class AssetForm(forms.ModelForm):
@@ -25,5 +26,6 @@ class AssetForm(forms.ModelForm):
         if ext not in valid_extensions:
             # Выбрасываем ошибку, которая покажется пользователю над полем
             raise ValidationError('Неподдерживаемый формат. Пожалуйста, загрузите .glb или .gltf')
+
             
         return file

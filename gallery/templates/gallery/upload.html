@@ -21,6 +21,14 @@
             padding: 10px 20px;
             cursor: pointer;
         }
+
+        .errorlist {
+        color: #dc3545;
+        list-style: none;
+        padding: 0;
+        margin: 5px 0;
+        font-size: 0.9rem;
+    }
     </style>
 </head>
 
@@ -39,13 +47,13 @@
         </div>
         <button type="submit">Загрузить в базу</button>
     </form>
-    {% if messages %}
+    <!--{% if messages %}
     <ul class="messages">
         {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        <p{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
             {% endfor %}
     </ul>
-    {% endif %}
+    {% endif %} -->
     <br>
     <a href="{% url 'home' %}">← Назад в галерею</a>
 </body>

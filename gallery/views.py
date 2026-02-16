@@ -30,10 +30,10 @@ def upload(request):
             # Если все поля заполнены верно - сохраняем в БД
             form.save()
             # И перекидываем пользователя на главную
-            messages.success(request, 'Спасибо, файл загружен!')
+            messages.success(request, 'Файл загружен!')
             return redirect('home')
         else:
-            messages.warning(request, "Неправильный формат файла")
+            messages.warning(request, "Неподдерживаемый формат. Пожалуйста, загрузите .glb или .gltf")
     else:
         # Сценарий: Пользователь просто зашел на страницу (GET)
         form = AssetForm() # Создаем пустую форму
