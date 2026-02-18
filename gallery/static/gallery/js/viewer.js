@@ -20,7 +20,7 @@ export function mountSimpleCube(containerId) {
     );
     camera.position.z = 2; // Отодвигаем камеру чуть назад
     // --- В. РЕНДЕРЕР (Художник) ---
-    const renderer = new THREE.WebGLRenderer({ antialias: true }); 
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
 
     renderer.setSize(container.clientWidth, container.clientHeight);
     // Вставляем "холст" (canvas) внутрь нашего div
@@ -48,6 +48,15 @@ export function mountSimpleCube(containerId) {
         renderer.render(scene, camera);
     }
     // Запуск
+
+    window.addEventListener('resize', () => {
+        // Обновляем параметры камеры
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        // Обновляем размер холста
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
     animate();
     console.log("3D сцена запущена в", containerId);
 }
