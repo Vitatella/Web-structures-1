@@ -5,18 +5,28 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 // 2. Экспортируем главную функцию
 // Она принимает ID HTML-элемента, в который нужно вставить 3D
-
+console.log("rthrthwer4hjw");
 export function loadModel(containerId, modelUrl) {
+    console.log("woeigwujtpje4wmpgwgge");
     const container = document.getElementById(containerId);
-    if (!container) return;
+    //if (!container) return;
     // 1. Стандартная настройка сцены (как в прошлый раз)
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf5f5f5); // Цвет фона под карточку
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth /
         container.clientHeight, 0.1, 1000);
+    //const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    //renderer.setSize(container.clientWidth, container.clientHeight);
+    // Очищаем контейнер от текста "Wait..." и вставляем Canvas
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    // Очищаем контейнер от текста "Wait..." и вставляем Canvas
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+
 
 
     container.appendChild(renderer.domElement);
