@@ -103,13 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'ru-ru'
+TIME_ZONE = 'Europe/Moscow'  # Укажите ваш город
 USE_I18N = True
-
-USE_TZ = True
+USE_TZ = True # Оставьте True, это важно для корректной работы баз данных
 
 
 # Static files (CSS, JavaScript, Images)
@@ -126,3 +123,4 @@ MEDIA_URL = '/media/'
 # BASE_DIR — это папка, где лежит manage.py
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / "staticfiles"
+

@@ -6,13 +6,9 @@
 <head>
     <meta charset="UTF-8">
     <title>3D Storage</title>
-
-    <head>
-        <meta charset="UTF-8">
-        <title>3D Storage</title>
-        <!-- ... ваши старые теги ... -->
-        <!-- ВАЖНО: Это карта, указывающая браузеру, где брать библиотеки -->
-        <script type="importmap">
+    <!-- ... ваши старые теги ... -->
+    <!-- ВАЖНО: Это карта, указывающая браузеру, где брать библиотеки -->
+    <script type="importmap">
 {
 "imports": {
 "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
@@ -20,15 +16,10 @@
 }
 }
 </script>
-        <!-- Подключение CSS (оставьте как было) -->
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'gallery/style.css' %}">
-    </head>
-
-
+    <!-- Подключение CSS (оставьте как было) -->
+    {% load static %}
     <link rel="stylesheet" href="{% static 'gallery/style.css' %}">
 </head>
-
 <body>
     <header>
         <h1>{{ page_title }}</h1>
@@ -36,6 +27,36 @@
         <a href="{% url 'upload' %}" class="btn" style="background-color: #28a745;">+
             Загрузить модель</a>
     </header>
+
+    <!-- Блок поиска и фильтров -->
+    <div class="toolbar">
+        <form action="{% url 'home' %}" method="get">
+
+            <!-- 1. Поле поиска -->
+            <!-- value="{{ request.GET.q }}" - это Sticky UI. 
+                 Мы оставляем текст в поле после перезагрузки страницы -->
+            <input type="text" name="q" class="search-input" placeholder="Найти 3D модель..."
+                value="{{ request.GET.q|default:'' }}">
+
+            <!-- 2. Сортировка -->
+            <!-- onchange="this.form.submit()" заставляет форму отправиться сразу при выборе из списка -->
+            <select name="ordering" class="sort-select" onchange="this.form.submit()">
+                <option value="new" {% if request.GET.ordering == 'new' %}selected{% endif %}>Сначала новые</option>
+                <option value="old" {% if request.GET.ordering == 'old' %}selected{% endif %}>Сначала старые</option>
+                <option value="name" {% if request.GET.ordering == 'name' %}selected{% endif %}>По имени (А-Я)</option>
+                <option value="today only" {% if request.GET.ordering == 'today only' %}selected{% endif %}>Загруженные сегодня</option>
+                <option value="week only" {% if request.GET.ordering == 'week only' %}selected{% endif %}>Загруженные за неделю</option>
+            </select>
+            <!-- 3. Кнопка -->
+            <button type="submit" class="search-btn">Найти</button>
+            <!-- 4. Кнопка сброса (если поиск активен) -->
+            {% if request.GET.q or request.GET.ordering %}
+            <a href="{% url 'home' %}" class="reset-link">✖ Сбросить</a>
+            {% endif %}
+        </form>
+    </div>
+
+
     <main>
         <!-- Контейнер сетки -->
         <div class="gallery-grid">
@@ -77,7 +98,20 @@
                 </div>
             </div>
             {% empty %}
-            <p>База пуста.</p>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+
+                {% if request.GET.q %}
+                <!-- Если был поиск -->
+                <h3>По запросу "<b>{{ request.GET.q }}</b>" ничего не найдено</h3>
+                
+                <p>Попробуйте изменить запрос или <a href="{% url 'home' %}">сбросить фильтры</a>.</p>
+
+                {% else %}
+                <!-- Если база реально пуста -->
+                <h3>База пуста</h3>
+                <p>Загрузите первую модель!</p>
+                {% endif %}
+            </div>
             {% endfor %}
         </div>
     </main>
@@ -106,14 +140,10 @@
                 if (url) {
                     console.log("Загружаю 3D по требованию:", url);
                     loadModel(id, url);
-
-                    // Убираем фоновую картинку, когда 3D загрузится? 
                     // loadModel сам очистит innerHTML и перекроет фон канвасом.
                 }
             });
         });
     </script>
-
-</body>
 
 </body>
