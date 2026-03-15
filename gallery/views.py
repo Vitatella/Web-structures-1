@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from .models import Asset
 from .forms import AssetForm
 from django.contrib import messages
+import base64
+from django.core.files.base import ContentFile
 
 #def home(request):
     # Мы пока не используем HTML-шаблоны, просто вернем строку.
@@ -23,19 +25,34 @@ def home(request):
 
 def upload(request):
     if request.method == 'POST':
-        # Сценарий: Пользователь нажал "Отправить"
-        # ВАЖНО: Передаем request.FILES, иначе файл потеряется!
         form = AssetForm(request.POST, request.FILES)
         if form.is_valid():
-            # Если все поля заполнены верно - сохраняем в БД
-            form.save()
-            # И перекидываем пользователя на главную
-            messages.success(request, 'Файл загружен!')
+            # 1. Создаем объект, но пока НЕ сохраняем в базу (commit=False)
+            new_asset = form.save(commit=False)
+            
+            # 2. Обрабатываем картинку из скрытого поля
+            image_data = request.POST.get('image_data') # Получаем строку Base64
+            
+            if image_data:
+                # Формат строки: "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+                # Нам нужно отрезать заголовок "data:image/jpeg;base64,"
+                format, imgstr = image_data.split(';base64,') 
+                ext = format.split('/')[-1] # получаем "jpeg"
+                
+                # Декодируем текст в байты
+                data = base64.b64decode(imgstr)
+                
+                # Создаем имя файла (берем имя модели + .jpg)
+                file_name = f"{new_asset.title}_thumb.{ext}"
+                
+                # Сохраняем байты в поле image
+                # ContentFile превращает байты в объект, который понимает Django FileField
+                new_asset.image.save(file_name, ContentFile(data), save=False)
+            # 3. Финальное сохранение в БД
+            new_asset.save()
+            
             return redirect('home')
-        else:
-            messages.warning(request, "Неподдерживаемый формат. Пожалуйста, загрузите .glb или .gltf")
     else:
-        # Сценарий: Пользователь просто зашел на страницу (GET)
-        form = AssetForm() # Создаем пустую форму
-        # Отдаем шаблон, передавая туда форму (заполненную ошибками или пустую)
+        form = AssetForm()
     return render(request, 'gallery/upload.html', {'form': form})
+
