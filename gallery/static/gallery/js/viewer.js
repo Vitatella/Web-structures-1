@@ -5,9 +5,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 // 2. Экспортируем главную функцию
 // Она принимает ID HTML-элемента, в который нужно вставить 3D
-console.log("rthrthwer4hjw");
+
 export function loadModel(containerId, modelUrl) {
-    console.log("woeigwujtpje4wmpgwgge");
     const container = document.getElementById(containerId);
     //if (!container) return;
     // 1. Стандартная настройка сцены (как в прошлый раз)
@@ -70,48 +69,40 @@ export function loadModel(containerId, modelUrl) {
 
 
     // 3. Загрузка Модели
+    container.style.backgroundImage = 'none';
     const loader = new GLTFLoader();
     loader.load(
         modelUrl,
 
-        // A. ON LOAD (Успех)
+        // A. ON LOAD
         (gltf) => {
-            let loadedModel = null; // Создайте переменную
-            loader.load(modelUrl, (gltf) => {
-                loadedModel = gltf.scene; // Сохраняем ссылку
-                fitCameraToObject(camera, loadedModel, 1.5);
-                scene.add(loadedModel);
-            });
+            const loadedModel = gltf.scene;
+
+            fitCameraToObject(camera, loadedModel, 1.5);
+            scene.add(loadedModel);
+
+            // УБИРАЕМ ФОН СРАЗУ ПОСЛЕ ЗАГРУЗКИ
+            container.style.backgroundImage = 'none';
 
             // Скрываем лоадер
             loaderDiv.style.opacity = '0';
-            setTimeout(() => {
-                loaderDiv.remove(); // Удаляем из DOM через 0.3 сек
-            }, 300);
+            setTimeout(() => loaderDiv.remove(), 300);
         },
-         // B. ON PROGRESS (Прогресс)
+
+        // B. PROGRESS
         (xhr) => {
-            // xhr.total - общий вес файла в байтах
-            // xhr.loaded - сколько скачалось
             if (xhr.total > 0) {
                 const percent = (xhr.loaded / xhr.total) * 100;
                 progressFill.style.width = percent + '%';
             }
         },
 
-        // C. ON ERROR (Ошибка)
+        // C. ERROR
         (error) => {
             console.error('Ошибка загрузки:', error);
-
-            loaderDiv.innerHTML = `<div class="error-msg">
-❌
- Ошибка загрузки<br>
-<small>Проверьте файл</small></div>`;
+            loaderDiv.innerHTML = `<div class="error-msg">❌ Ошибка загрузки<br><small>Проверьте файл</small></div>`;
         }
     );
-    // ... (анимация и resize) ...
-
-
 
 
 

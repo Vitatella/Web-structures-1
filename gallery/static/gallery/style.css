@@ -42,21 +42,6 @@ header {
     /* При наведении карточка чуть взлетает */
 }
 
-/* Место для будущего 3D-вьювера или скриншота */
-.card-preview {
-    position: relative;
-    height: 200px;
-    background-color: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #888;
-    font-size: 3rem;
-    background: radial-gradient(circle, #ffffff,
-            #86a1db);
-
-}
-
 .card-info {
     padding: 20px;
 }
@@ -95,14 +80,12 @@ header {
     right: 0;
     bottom: 0;
     background: rgba(255, 255, 255, 0.9);
-    /* Полупрозрачный белый */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 10;
     transition: opacity 0.3s;
-    /* Плавное исчезновение */
 }
 
 /* Полоска прогресса (фон) */
@@ -129,4 +112,61 @@ header {
     color: #dc3545;
     text-align: center;
     padding: 20px;
+}
+
+
+/* Место для будущего 3D-вьювера или скриншота */
+.card-preview {
+    position: relative;
+    cursor: pointer;
+    height: 200px;
+    background-color: #e0e0e0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+/* Затемнение картинки при наведении */
+.card-preview:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+/* Кнопка Play */
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Точная центровка */
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    border: 2px solid white;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    z-index: 5;
+    /* Чтобы была поверх картинки */
+}
+
+/* Эффект нажатия */
+.card-preview:hover .play-btn {
+    background: rgba(0, 123, 255, 0.8);
+    /* Синий при наведении */
+    transform: translate(-50%, -50%) scale(1.1);
 }
