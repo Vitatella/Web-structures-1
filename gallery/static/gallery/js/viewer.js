@@ -37,7 +37,7 @@ export function loadModel(containerId, modelUrl) {
     controls.dampingFactor = 0.05;
     // Ограничиваем зум (чтобы не улететь сквозь модель)
     controls.minDistance = 0.1;
-    controls.maxDistance = 50;
+    controls.maxDistance = 120;
 
 
     container.innerHTML = '';
@@ -50,33 +50,72 @@ export function loadModel(containerId, modelUrl) {
     scene.background = null;
 
 
+    if (!container) return;
+    // ... (код сцены, камеры, рендерера, контролов, света) ...
+    // Убедитесь, что очистка container.innerHTML = '' происходит ДО добавления лоадера
+
+    // --- 1. Генерируем HTML лоадера программно --
+    const loaderDiv = document.createElement('div');
+    loaderDiv.className = 'loader-overlay';
+    loaderDiv.innerHTML = `
+        <div style="color: #666; font-size: 0.9rem;">Loading...</div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+    `;
+    container.appendChild(loaderDiv);
+    // Находим полоску, чтобы менять её ширину
+    const progressFill = loaderDiv.querySelector('.progress-fill');
+
+
+
     // 3. Загрузка Модели
     const loader = new GLTFLoader();
     loader.load(
-        modelUrl, // URL, который пришел из Django
-        (gltf) => {
-            // --- SUCCESS ---
-            const model = gltf.scene;
-            // Здесь будет магия центровки (Шаг 2)
-            fitCameraToObject(camera, model, 1.5);
-            //scene.add(model);
+        modelUrl,
 
-            loadedModel = null; // Создайте переменную
+        // A. ON LOAD (Успех)
+        (gltf) => {
+            let loadedModel = null; // Создайте переменную
             loader.load(modelUrl, (gltf) => {
                 loadedModel = gltf.scene; // Сохраняем ссылку
                 fitCameraToObject(camera, loadedModel, 1.5);
                 scene.add(loadedModel);
             });
 
+            // Скрываем лоадер
+            loaderDiv.style.opacity = '0';
+            setTimeout(() => {
+                loaderDiv.remove(); // Удаляем из DOM через 0.3 сек
+            }, 300);
         },
-        undefined, // Progress (можно пропустить)
-        (error) => {
-            // --- ERROR ---
-            console.error('Ошибка загрузки:', error);
-            container.innerHTML = '❌ Error';
-        }
+         // B. ON PROGRESS (Прогресс)
+        (xhr) => {
+            // xhr.total - общий вес файла в байтах
+            // xhr.loaded - сколько скачалось
+            if (xhr.total > 0) {
+                const percent = (xhr.loaded / xhr.total) * 100;
+                progressFill.style.width = percent + '%';
+            }
+        },
 
+        // C. ON ERROR (Ошибка)
+        (error) => {
+            console.error('Ошибка загрузки:', error);
+
+            loaderDiv.innerHTML = `<div class="error-msg">
+❌
+ Ошибка загрузки<br>
+<small>Проверьте файл</small></div>`;
+        }
     );
+    // ... (анимация и resize) ...
+
+
+
+
+
+
     // 4. Анимация (Loop)
     function animate() {
         requestAnimationFrame(animate);
@@ -89,7 +128,6 @@ export function loadModel(containerId, modelUrl) {
         renderer.render(scene, camera);
     }
 
-    let loadedModel = null;
     animate();
     // Resize handler (как в прошлый раз)
     window.addEventListener('resize', () => {
