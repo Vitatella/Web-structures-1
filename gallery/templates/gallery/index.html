@@ -20,6 +20,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'gallery/style.css' %}">
 </head>
+
 <body>
     <header>
         <h1>{{ page_title }}</h1>
@@ -43,9 +44,11 @@
             <select name="ordering" class="sort-select" onchange="this.form.submit()">
                 <option value="new" {% if request.GET.ordering == 'new' %}selected{% endif %}>Сначала новые</option>
                 <option value="old" {% if request.GET.ordering == 'old' %}selected{% endif %}>Сначала старые</option>
-                <option value="name" {% if request.GET.ordering == 'name' %}selected{% endif %}>По имени (А-Я)</option>
-                <option value="today only" {% if request.GET.ordering == 'today only' %}selected{% endif %}>Загруженные сегодня</option>
-                <option value="week only" {% if request.GET.ordering == 'week only' %}selected{% endif %}>Загруженные за неделю</option>
+                <option value="name" {% if request.GET.ordering == 'name ' %}selected{% endif %}>По имени (А-Я)</option>
+                <option value="today only" {% if request.GET.ordering == 'today only' %}selected{% endif %}>Загруженные
+                    сегодня</option>
+                <option value="week only" {% if request.GET.ordering == 'week only' %}selected{% endif %}>Загруженные за
+                    неделю</option>
             </select>
             <!-- 3. Кнопка -->
             <button type="submit" class="search-btn">Найти</button>
@@ -58,9 +61,11 @@
 
 
     <main>
+        {% load gallery_extras %}
         <!-- Контейнер сетки -->
         <div class="gallery-grid">
-            {% for asset in assets %}
+
+            {% for asset in page_obj %}
             <!-- Карточка -->
             <div class="asset-card">
                 <!-- 1. Превью (Верхняя часть) -->
@@ -103,7 +108,7 @@
                 {% if request.GET.q %}
                 <!-- Если был поиск -->
                 <h3>По запросу "<b>{{ request.GET.q }}</b>" ничего не найдено</h3>
-                
+
                 <p>Попробуйте изменить запрос или <a href="{% url 'home' %}">сбросить фильтры</a>.</p>
 
                 {% else %}
@@ -113,6 +118,27 @@
                 {% endif %}
             </div>
             {% endfor %}
+        </div>
+
+        <div class="pagination">
+            <span class="step-links">
+
+                {% if page_obj.has_previous %}
+                <!-- Используем наш тег: берем текущий request и меняем page на 1 -->
+                <a href="?{% param_replace request page=1 %}">&laquo; Первая</a>
+                <a href="?{% param_replace request page=page_obj.previous_page_number %}">Назад</a>
+
+                {% endif %}
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                <a href="?{% param_replace request page=page_obj.next_page_number %}">Далее</a>
+                <a href="?{% param_replace request page=page_obj.paginator.num_pages %}">Последняя &raquo;</a>
+
+                {% endif %}
+
+            </span>
         </div>
     </main>
 
@@ -147,3 +173,14 @@
     </script>
 
 </body>
+
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <!-- message.tags добавит класс 'success', 'error' или 'warning' -->
+    <div class="alert {{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
