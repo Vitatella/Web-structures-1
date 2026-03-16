@@ -11,7 +11,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
+
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bturzovt)o*f7cl+ukpewi$y#h_%&yff6@vfw+vro^^320z^4b'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
+# os.getenv возвращает строку. Нам нужно превратить строку 'True' в булево True.
+DEBUG = os.getenv('DEBUG') == 'True'
+#DEBUG = 'True'
+# Разрешенные хосты. В продакшене здесь будет имя сайта.
+# Звездочка * разрешает всем (пока оставим так для простоты)
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -114,13 +122,16 @@ USE_TZ = True # Оставьте True, это важно для корректн
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'gallery' / 'static',
+]
 
-import os
 # ... (конец файла settings.py)
 # Базовый URL для доступа к файлам в браузере
 MEDIA_URL = '/media/'
 # Физический путь на диске, где будет создана папка media
 # BASE_DIR — это папка, где лежит manage.py
 MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
