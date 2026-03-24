@@ -28,8 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
 # os.getenv возвращает строку. Нам нужно превратить строку 'True' в булево True.
-#DEBUG = os.getenv('DEBUG') == 'True'
-DEBUG = 'True'
+DEBUG = os.getenv('DEBUG') == 'True'
+#DEBUG = 'True'
 # Разрешенные хосты. В продакшене здесь будет имя сайта.
 # Звездочка * разрешает всем (пока оставим так для простоты)
 ALLOWED_HOSTS = ['*']
